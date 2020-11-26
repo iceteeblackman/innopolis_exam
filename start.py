@@ -1,19 +1,27 @@
 import os.path
+import os
+
 
 from flask import Flask, render_template, redirect, request, url_for, flash
 from flask_login import login_user, login_required, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin
 from flask_autoindex import AutoIndex
+
+UPLOAD_FOLDER = '/home/itbm/dev/innopolis_exam/'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
 app.secret_key = 'some secret salt'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://itbm:_1q2w3e4r@localhost/innopolis_app'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 manager = LoginManager(app)
 files_index = AutoIndex(app, os.path.curdir + '/dev/innopolis_exam', add_url_rules=False)
+
 
 
 class Users(db.Model, UserMixin):
@@ -22,11 +30,17 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False)
 
 
+db.create_all()
+
+
 @manager.user_loader
 def load_user(user_id):
     return Users.query.get(user_id)
 
-db.create_all()
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 @app.route('/')
@@ -40,6 +54,17 @@ def index():
 @login_required
 def autoindex(path='.'):
     return files_index.render_autoindex(path)
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('upload_file', filename=filename))
+    return render_template('upload.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
