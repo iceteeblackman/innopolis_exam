@@ -7,4 +7,4 @@ COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt
 EXPOSE 8003
-CMD gunicorn -w 5 --reload start:app --bind 0.0.0.0:8003
+CMD gunicorn -w 1 --reload start:app --bind 0.0.0.0:8003
