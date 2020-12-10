@@ -6,7 +6,7 @@ from flask_login import login_required, logout_user, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
-from exam import app, db, files_index
+from exam import app, db, files_index, ALLOWED_EXTENSIONS
 from exam.models import Users
 
 
