@@ -5,7 +5,7 @@ from flask_autoindex import AutoIndex
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
-UPLOAD_FOLDER = os.environ['USER_FOLDER']
+UPLOAD_FOLDER = os.environ['FOLDER']
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
@@ -15,7 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 manager = LoginManager(app)
-files_index = AutoIndex(app, os.environ['USER_FOLDER'], add_url_rules=False)
+files_index = AutoIndex(app, os.environ['FOLDER'], add_url_rules=False)
 
 from exam import models, routes
 
