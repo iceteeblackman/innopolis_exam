@@ -10,7 +10,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
 app.secret_key = 'some secret salt'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://itbm:_1q2w3e4r@172.17.0.2/innopolis_app'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://itbm:_1q2w3e4r@172.17.0.2/innopolis-app'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
